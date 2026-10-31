@@ -5,8 +5,8 @@ import { expect, test } from "@playwright/test";
  * listing → live auction detail → valid bid → too-low rejection →
  * competitor outbid → force end → winner state.
  *
- * The demo panel (bottom-right "D" button) provides deterministic controls
- * so no random timers are needed.
+ * Deterministic: the competitor simulator is PAUSED before bidding so no
+ * random activity interferes; the outbid step uses the explicit trigger.
  */
 
 const LIVE_TITLE = "Classic Omega Constellation ’68";
@@ -22,21 +22,24 @@ test.describe("Auction bidding journey", () => {
     await page.getByRole("link", { name: new RegExp(LIVE_TITLE) }).first().click();
     await expect(page.getByText("Current price", { exact: false })).toBeVisible();
 
+    // Deterministic mode: pause auto competitor activity first.
+    await page.getByRole("button", { name: /toggle demo controls/i }).click();
+    await page.getByRole("button", { name: /pause competitors/i }).click();
+    await expect(page.getByText(/paused/i).first()).toBeVisible({ timeout: 10_000 });
+
     // 3. Submit a too-low bid → rejection feedback.
     const input = page.getByLabel(/your bid/i);
     await input.fill("1000000");
-    await page.getByRole("button", { name: /place bid/i }).click();
-    await expect(page.getByText(/bid is below the minimum/i)).toBeVisible();
+    await expect(page.getByRole("alert").last()).toHaveText(/below the minimum next bid/i, { timeout: 10_000 });
 
     // 4. Submit a valid bid → accepted + appears in history.
-    await input.fill("");
     await input.fill("12000000");
+    await expect(page.getByRole("button", { name: /place bid/i })).toBeEnabled({ timeout: 10_000 });
     await page.getByRole("button", { name: /place bid/i }).click();
-    await expect(page.getByText(/bid placed/i)).toBeVisible();
+    await expect(page.getByText(/bid placed/i)).toBeVisible({ timeout: 10_000 });
     await expect(page.getByText("Rp 12.000.000").first()).toBeVisible();
 
     // 5. Trigger a competitor bid via demo panel → outbid feedback.
-    await page.getByRole("button", { name: /toggle demo controls/i }).click();
     await page.getByRole("button", { name: /trigger one competitor bid/i }).click();
     await expect(page.getByText(/outbid/i).first()).toBeVisible({ timeout: 15_000 });
 
@@ -44,6 +47,7 @@ test.describe("Auction bidding journey", () => {
     await page.getByRole("button", { name: /force auction end/i }).click();
     await expect(page.getByText(/auction ended/i).first()).toBeVisible({ timeout: 15_000 });
     await expect(page.getByRole("button", { name: /place bid/i })).toHaveCount(0);
+    await expect(page.getByText(/won by/i)).toBeVisible();
   });
 
   test("listing filters work", async ({ page }) => {
