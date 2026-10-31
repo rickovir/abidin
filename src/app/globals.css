@@ -1,30 +1,76 @@
 @import "tailwindcss";
 
 /*
- * ABIDIN Design System — Dark Mode First
- * Tokens extracted from the brand guideline doc.
+ * ABIDIN Design System — Dark Mode First, dengan light mode alternatif.
+ * Semua warna token-driven (CSS vars): light = :root, dark = .dark override.
+ * Brand accents dari dokumen design system; versi light dipertua kontrasnya.
  */
 
 :root {
-  /* Brand accents */
+  /* Brand accents — light variants (kontras teks aman di background terang) */
+  --abidin-cyan: #0086a3;
+  --abidin-blue: #1b64f2;
+  --abidin-purple: #7c3aed;
+  --abidin-orange: #e14b1f;
+
+  /* Surfaces — light */
+  --surface-bg: #fafbfd;
+  --surface-card: #ffffff;
+  --surface-hover: #eef2f8;
+  --surface-border: #dce4ef;
+
+  /* Content — light */
+  --content-primary: #0b0f19;
+  --content-secondary: #5a6b85;
+  --content-muted: #8a97ac;
+
+  /* Gradient stops — light (diperbuat agar teks gradient tetap terbaca) */
+  --g-hero-1: #0086a3;
+  --g-hero-2: #7c3aed;
+  --g-hero-3: #e14b1f;
+  --g-btn-1: #1b64f2;
+  --g-btn-2: #8b5cf6;
+  --g-bid-1: #e14b1f;
+  --g-bid-2: #f67a00;
+
+  /* Ambient glows — light (sangat halus) */
+  --glow-blue: rgba(27, 100, 242, 0.05);
+  --glow-purple: rgba(139, 92, 246, 0.04);
+
+  --background: var(--surface-bg);
+  --foreground: var(--content-primary);
+}
+
+.dark {
+  /* Brand accents — dark (persis dokumen design system) */
   --abidin-cyan: #00f0ff;
   --abidin-blue: #1b64f2;
   --abidin-purple: #8b5cf6;
   --abidin-orange: #ff5e36;
 
-  /* Surfaces */
+  /* Surfaces — dark */
   --surface-bg: #0b0f19;
   --surface-card: #161f30;
   --surface-hover: #212d45;
   --surface-border: #2b3b59;
 
-  /* Content */
+  /* Content — dark */
   --content-primary: #f8fafc;
   --content-secondary: #94a3b8;
   --content-muted: #64748b;
 
-  --background: var(--surface-bg);
-  --foreground: var(--content-primary);
+  /* Gradient stops — dark */
+  --g-hero-1: #00f0ff;
+  --g-hero-2: #8b5cf6;
+  --g-hero-3: #ff5e36;
+  --g-btn-1: #1b64f2;
+  --g-btn-2: #8b5cf6;
+  --g-bid-1: #ff5e36;
+  --g-bid-2: #ff8c00;
+
+  /* Ambient glows — dark */
+  --glow-blue: rgba(27, 100, 242, 0.14);
+  --glow-purple: rgba(139, 92, 246, 0.1);
 }
 
 @theme inline {
@@ -49,22 +95,22 @@
   --font-mono: ui-monospace, "SF Mono", monospace;
 }
 
-/* ---- Brand gradient presets (from design system doc) ---- */
+/* ---- Brand gradient presets (token-driven, adaptif dua mode) ---- */
 
 .bg-gradient-abidin-core {
-  background: linear-gradient(135deg, #00f0ff 0%, #1b64f2 40%, #ff5e36 100%);
+  background: linear-gradient(135deg, var(--g-hero-1) 0%, var(--g-btn-1) 40%, var(--g-hero-3) 100%);
 }
 
 .bg-gradient-btn-primary {
-  background: linear-gradient(90deg, #1b64f2 0%, #8b5cf6 100%);
+  background: linear-gradient(90deg, var(--g-btn-1) 0%, var(--g-btn-2) 100%);
 }
 
 .bg-gradient-bid-action {
-  background: linear-gradient(90deg, #ff5e36 0%, #ff8c00 100%);
+  background: linear-gradient(90deg, var(--g-bid-1) 0%, var(--g-bid-2) 100%);
 }
 
 .text-gradient-hero {
-  background: linear-gradient(90deg, #00f0ff 0%, #8b5cf6 50%, #ff5e36 100%);
+  background: linear-gradient(90deg, var(--g-hero-1) 0%, var(--g-hero-2) 50%, var(--g-hero-3) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -79,11 +125,14 @@
   box-shadow: 0 0 25px -5px rgba(255, 94, 54, 0.3);
 }
 
-/* Native form controls on dark */
-input,
-button,
-select,
-textarea {
+/* Native form controls mengikuti mode */
+html:not(.dark) {
+  color-scheme: light;
+}
+html.dark input,
+html.dark button,
+html.dark select,
+html.dark textarea {
   color-scheme: dark;
 }
 
@@ -94,6 +143,7 @@ textarea {
 body {
   background: var(--surface-bg);
   color: var(--content-primary);
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 /* Subtle ambient glow behind the page for depth */
@@ -103,8 +153,8 @@ body::before {
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(600px 300px at 85% -5%, rgba(27, 100, 242, 0.14), transparent 70%),
-    radial-gradient(500px 260px at 10% 110%, rgba(139, 92, 246, 0.1), transparent 70%);
+    radial-gradient(600px 300px at 85% -5%, var(--glow-blue), transparent 70%),
+    radial-gradient(500px 260px at 10% 110%, var(--glow-purple), transparent 70%);
   z-index: -1;
 }
 

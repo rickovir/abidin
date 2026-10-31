@@ -3,7 +3,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuctionServiceProvider } from "../../services/auction-service-provider";
-import { BidForm, type BidFeedback } from "@/components/ui/bid-form";
+import { BidForm } from "@/components/ui/bid-form";
 import { BidHistory } from "@/components/ui/bid-history";
 import type { Auction, Bid } from "../../types/auction.types";
 

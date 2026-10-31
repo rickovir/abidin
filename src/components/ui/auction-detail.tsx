@@ -200,7 +200,12 @@ export function AuctionDetail({ auctionId }: { auctionId: string }) {
           >
             <div className="flex items-center justify-between">
               <AuctionStatusBadge status={ended ? "ended" : auction.status} withPulse />
-              <LiveIndicator connection={auction.status === "live" ? connection : "paused"} />
+              {/* Connection indicator only surfaces when NOT live
+                  (Paused / Reconnecting) — avoids duplicate "Live" badges
+                  while keeping the spec's activity-status requirement. */}
+              {auction.status === "live" && connection !== "live" ? (
+                <LiveIndicator connection={connection} />
+              ) : null}
             </div>
 
             <div className="mt-5">

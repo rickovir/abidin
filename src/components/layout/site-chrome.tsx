@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { ThemeToggle } from "./theme-toggle";
 
 export function SiteHeader() {
   return (
@@ -11,13 +12,22 @@ export function SiteHeader() {
           href="/auctions"
           className="rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-abidin-cyan"
         >
+          {/* Logo variants: neon untuk dark, deep-tone untuk light */}
           <Image
             src="/images/logo.png"
             alt="abidin — Auction & Bid Index"
             width={132}
             height={33}
             priority
-            className="h-8 w-auto"
+            className="h-8 w-auto dark:block hidden"
+          />
+          <Image
+            src="/images/logo-light.png"
+            alt="abidin — Auction & Bid Index"
+            width={132}
+            height={33}
+            priority
+            className="h-8 w-auto dark:hidden block"
           />
         </Link>
         <nav aria-label="Main" className="flex items-center gap-1 text-sm font-medium">
@@ -27,6 +37,7 @@ export function SiteHeader() {
           >
             Auctions
           </Link>
+          <ThemeToggle />
         </nav>
       </div>
     </header>
