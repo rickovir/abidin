@@ -1,8 +1,8 @@
 "use client";
 
-
-import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 import { useAuctionServiceContext } from "../../features/auction/services/auction-service-provider";
 import type { SimulatorState } from "../../features/auction/services/event-simulator";
 
@@ -12,10 +12,15 @@ import type { SimulatorState } from "../../features/auction/services/event-simul
  * pause/resume competitor activity, fire one competitor bid, force-end the
  * auction, or reset mock state.
  */
-export function DemoPanel({ auctionId }: { auctionId?: string }) {
+export function DemoPanel() {
   const { controls } = useAuctionServiceContext();
   const [open, setOpen] = useState(false);
   const [simState, setSimState] = useState<SimulatorState>(controls.simulator.state);
+  const pathname = usePathname();
+
+  // /auctions/<id> → <id>; controls are auction-scoped elsewhere.
+  const match = pathname?.match(/^\/auctions\/([^/]+)$/);
+  const auctionId = match ? decodeURIComponent(match[1]) : undefined;
 
   useState(() => {
     controls.simulator.onStateChange(setSimState);
