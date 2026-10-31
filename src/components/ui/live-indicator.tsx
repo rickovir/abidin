@@ -12,21 +12,21 @@ export function LiveIndicator({
   const config = {
     live: {
       label: "Live",
-      dot: "bg-emerald-500",
-      text: "text-emerald-700",
-      ring: "ring-emerald-600/20 bg-emerald-50",
+      dot: "bg-abidin-cyan",
+      text: "text-abidin-cyan",
+      ring: "ring-abidin-cyan/30 bg-abidin-cyan/10",
     },
     reconnecting: {
       label: "Reconnecting…",
-      dot: "bg-amber-500 animate-pulse motion-reduce:animate-none",
-      text: "text-amber-700",
-      ring: "ring-amber-600/20 bg-amber-50",
+      dot: "bg-abidin-orange animate-pulse motion-reduce:animate-none",
+      text: "text-abidin-orange",
+      ring: "ring-abidin-orange/30 bg-abidin-orange/10",
     },
     paused: {
       label: "Paused",
-      dot: "bg-stone-400",
-      text: "text-stone-600",
-      ring: "ring-stone-500/20 bg-stone-100",
+      dot: "bg-content-muted",
+      text: "text-content-secondary",
+      ring: "ring-surface-border bg-surface-hover",
     },
   }[connection];
 

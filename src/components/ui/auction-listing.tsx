@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import { useAuctions } from "../../features/auction/hooks/use-auctions";
 import { AuctionCard } from "@/components/ui/auction-card";
 import { cn } from "@/lib/utils";
@@ -23,10 +22,10 @@ export function AuctionListing() {
     <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="font-serif text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">
+          <h1 className="text-3xl font-bold tracking-tight text-gradient-hero sm:text-4xl">
             Live auctions
           </h1>
-          <p className="mt-2 max-w-xl text-sm text-stone-600">
+          <p className="mt-2 max-w-xl text-sm text-content-secondary">
             Curated items on the block right now. Watch the price move in real
             time and place your bid before the clock runs out.
           </p>
@@ -40,8 +39,8 @@ export function AuctionListing() {
               className={cn(
                 "rounded-full px-3.5 py-1.5 text-xs font-semibold capitalize transition",
                 filter === f
-                  ? "bg-stone-900 text-white"
-                  : "bg-white text-stone-600 ring-1 ring-inset ring-stone-200 hover:bg-stone-50"
+                  ? "bg-gradient-btn-primary text-white shadow-sm"
+                  : "bg-surface-card text-content-secondary ring-1 ring-inset ring-surface-border hover:bg-surface-hover hover:text-content-primary"
               )}
             >
               {f}
@@ -54,31 +53,31 @@ export function AuctionListing() {
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" aria-busy="true" aria-label="Loading auctions">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="animate-pulse motion-reduce:animate-none">
-              <div className="aspect-[4/3] rounded-2xl bg-stone-200" />
-              <div className="mt-3 h-4 w-2/3 rounded bg-stone-200" />
-              <div className="mt-2 h-4 w-1/3 rounded bg-stone-200" />
+              <div className="aspect-[4/3] rounded-2xl bg-surface-hover" />
+              <div className="mt-3 h-4 w-2/3 rounded bg-surface-hover" />
+              <div className="mt-2 h-4 w-1/3 rounded bg-surface-hover" />
             </div>
           ))}
         </div>
       ) : isError ? (
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-8 text-center" role="alert">
-          <p className="font-semibold text-red-800">Couldn&apos;t load auctions</p>
-          <p className="mt-1 text-sm text-red-700">
+        <div className="rounded-2xl border border-abidin-orange/40 bg-abidin-orange/10 p-8 text-center" role="alert">
+          <p className="font-semibold text-abidin-orange">Couldn&apos;t load auctions</p>
+          <p className="mt-1 text-sm text-content-secondary">
             {(error as Error | undefined)?.message ?? "Something went wrong."}
           </p>
           <button
             onClick={() => void refetch()}
-            className="mt-4 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
+            className="mt-4 rounded-xl bg-gradient-bid-action px-4 py-2 text-sm font-semibold text-white hover:opacity-90"
           >
             Try again
           </button>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="rounded-2xl border border-stone-200 bg-stone-50 p-12 text-center">
-          <p className="font-semibold text-stone-700">
+        <div className="rounded-2xl border border-surface-border bg-surface-card p-12 text-center">
+          <p className="font-semibold text-content-primary">
             {filter === "all" ? "No auctions yet" : `No ${filter} auctions right now`}
           </p>
-          <p className="mt-1 text-sm text-stone-500">
+          <p className="mt-1 text-sm text-content-secondary">
             Check back soon — new items go on the block regularly.
           </p>
         </div>

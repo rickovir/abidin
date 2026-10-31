@@ -18,9 +18,13 @@ export function useCountdown(endsAt: string): CountdownValue {
   const [now, setNow] = useState<number | null>(null);
 
   useEffect(() => {
-    setNow(Date.now());
+    // Initial read scheduled async (rule: no synchronous setState in effects).
+    const kickoff = setTimeout(() => setNow(Date.now()), 0);
     const timer = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(timer);
+    return () => {
+      clearTimeout(kickoff);
+      clearInterval(timer);
+    };
   }, []);
 
   const msLeft =

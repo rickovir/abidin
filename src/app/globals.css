@@ -1,23 +1,111 @@
 @import "tailwindcss";
 
+/*
+ * ABIDIN Design System — Dark Mode First
+ * Tokens extracted from the brand guideline doc.
+ */
+
 :root {
-  --background: #faf9f7;
-  --foreground: #1c1917;
+  /* Brand accents */
+  --abidin-cyan: #00f0ff;
+  --abidin-blue: #1b64f2;
+  --abidin-purple: #8b5cf6;
+  --abidin-orange: #ff5e36;
+
+  /* Surfaces */
+  --surface-bg: #0b0f19;
+  --surface-card: #161f30;
+  --surface-hover: #212d45;
+  --surface-border: #2b3b59;
+
+  /* Content */
+  --content-primary: #f8fafc;
+  --content-secondary: #94a3b8;
+  --content-muted: #64748b;
+
+  --background: var(--surface-bg);
+  --foreground: var(--content-primary);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+
+  --color-abidin-cyan: var(--abidin-cyan);
+  --color-abidin-blue: var(--abidin-blue);
+  --color-abidin-purple: var(--abidin-purple);
+  --color-abidin-orange: var(--abidin-orange);
+
+  --color-surface-bg: var(--surface-bg);
+  --color-surface-card: var(--surface-card);
+  --color-surface-hover: var(--surface-hover);
+  --color-surface-border: var(--surface-border);
+
+  --color-content-primary: var(--content-primary);
+  --color-content-secondary: var(--content-secondary);
+  --color-content-muted: var(--content-muted);
+
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, "SF Mono", monospace;
-  --font-serif: ui-serif, Georgia, "Times New Roman", serif;
 }
 
-/* Premium marketplace: light editorial theme only (no dark auto-switch). */
+/* ---- Brand gradient presets (from design system doc) ---- */
+
+.bg-gradient-abidin-core {
+  background: linear-gradient(135deg, #00f0ff 0%, #1b64f2 40%, #ff5e36 100%);
+}
+
+.bg-gradient-btn-primary {
+  background: linear-gradient(90deg, #1b64f2 0%, #8b5cf6 100%);
+}
+
+.bg-gradient-bid-action {
+  background: linear-gradient(90deg, #ff5e36 0%, #ff8c00 100%);
+}
+
+.text-gradient-hero {
+  background: linear-gradient(90deg, #00f0ff 0%, #8b5cf6 50%, #ff5e36 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.card-glow-cyan {
+  box-shadow: 0 0 25px -5px rgba(0, 240, 255, 0.25);
+}
+
+.card-glow-orange {
+  box-shadow: 0 0 25px -5px rgba(255, 94, 54, 0.3);
+}
+
+/* Native form controls on dark */
+input,
+button,
+select,
+textarea {
+  color-scheme: dark;
+}
+
+::selection {
+  background: rgba(0, 240, 255, 0.25);
+}
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--surface-bg);
+  color: var(--content-primary);
+}
+
+/* Subtle ambient glow behind the page for depth */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(600px 300px at 85% -5%, rgba(27, 100, 242, 0.14), transparent 70%),
+    radial-gradient(500px 260px at 10% 110%, rgba(139, 92, 246, 0.1), transparent 70%);
+  z-index: -1;
 }
 
 @media (prefers-reduced-motion: reduce) {

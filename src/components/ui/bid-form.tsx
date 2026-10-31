@@ -55,20 +55,20 @@ export function BidForm({
         <div className="flex items-baseline justify-between">
           <label
             htmlFor="bid-amount"
-            className="text-sm font-medium text-stone-700"
+            className="text-sm font-medium text-content-secondary"
           >
             Your bid
           </label>
-          <span className="text-xs text-stone-500">
+          <span className="text-xs text-content-secondary">
             Min. next bid{" "}
-            <strong className="font-semibold text-stone-800 tabular-nums">
+            <strong className="font-semibold text-abidin-cyan tabular-nums">
               {formatIDR(minimumNextBid)}
             </strong>
           </span>
         </div>
         <div className="mt-1.5 flex gap-2">
           <div className="relative flex-1">
-            <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-sm text-stone-500">
+            <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-sm text-content-muted">
               Rp
             </span>
             <input
@@ -83,10 +83,10 @@ export function BidForm({
               aria-invalid={showFieldError}
               aria-describedby={showFieldError ? "bid-amount-error" : undefined}
               className={cn(
-                "w-full rounded-xl border border-stone-300 bg-white py-2.5 pl-10 pr-3 text-right font-semibold tabular-nums text-stone-900 shadow-sm",
-                "focus:border-stone-900 focus:outline-none focus:ring-2 focus:ring-stone-900/10",
-                "disabled:cursor-not-allowed disabled:bg-stone-50 disabled:text-stone-400",
-                showFieldError && "border-red-400 focus:border-red-500 focus:ring-red-100"
+                "w-full rounded-xl border border-surface-border bg-surface-bg py-2.5 pl-10 pr-3 text-right font-semibold tabular-nums text-content-primary shadow-sm",
+                "focus:border-abidin-cyan focus:outline-none focus:ring-2 focus:ring-abidin-cyan/25",
+                "disabled:cursor-not-allowed disabled:bg-surface-hover disabled:text-content-muted",
+                showFieldError && "border-abidin-orange focus:border-abidin-orange focus:ring-abidin-orange/25"
               )}
             />
           </div>
@@ -94,9 +94,9 @@ export function BidForm({
             type="submit"
             disabled={submitDisabled}
             className={cn(
-              "inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition",
-              "bg-stone-900 hover:bg-stone-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900",
-              "disabled:cursor-not-allowed disabled:bg-stone-300 disabled:hover:bg-stone-300",
+              "inline-flex items-center justify-center rounded-xl bg-gradient-bid-action px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition",
+              "hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-abidin-cyan",
+              "disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:opacity-40",
               pending && "cursor-wait"
             )}
           >
@@ -104,14 +104,14 @@ export function BidForm({
           </button>
         </div>
         {showFieldError && (
-          <p id="bid-amount-error" role="alert" className="mt-1.5 text-xs text-red-600">
+          <p id="bid-amount-error" role="alert" className="mt-1.5 text-xs text-abidin-orange">
             {validation.message}
           </p>
         )}
       </div>
 
       {auction.status !== "live" && (
-        <p className="rounded-xl bg-stone-50 p-3 text-xs text-stone-600">
+        <p className="rounded-xl bg-surface-hover p-3 text-xs text-content-secondary">
           {auction.status === "upcoming"
             ? "Bidding opens when the auction starts."
             : "This auction has ended — bidding is closed."}

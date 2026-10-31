@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import type { AuctionEvent } from "../types/auction.types";
 import { useAuctionServiceContext } from "../services/auction-service-provider";

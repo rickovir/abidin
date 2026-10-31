@@ -28,7 +28,7 @@ export function DemoPanel() {
   });
 
   const btn =
-    "rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-xs font-medium text-stone-700 transition hover:bg-stone-100 disabled:opacity-40";
+    "rounded-lg border border-surface-border bg-surface-hover px-3 py-1.5 text-xs font-medium text-content-secondary transition hover:bg-surface-border hover:text-content-primary disabled:opacity-40";
 
   return (
     <div className="fixed bottom-4 right-4 z-50 print:hidden">
@@ -36,16 +36,16 @@ export function DemoPanel() {
         <div
           role="group"
           aria-label="Demo controls"
-          className="mb-2 w-56 rounded-2xl border border-stone-200 bg-white p-3 shadow-lg"
+          className="mb-2 w-56 rounded-2xl border border-surface-border bg-surface-card p-3 shadow-lg"
         >
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-widest text-stone-500">
+            <span className="text-xs font-semibold uppercase tracking-widest text-content-muted">
               Demo controls
             </span>
             <span
               className={cn(
                 "size-2 rounded-full",
-                simState === "running" ? "bg-emerald-500" : "bg-stone-300"
+                simState === "running" ? "bg-abidin-cyan" : "bg-content-muted"
               )}
               aria-label={`Simulator ${simState}`}
             />
@@ -94,7 +94,7 @@ export function DemoPanel() {
       <button
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        className="flex size-10 items-center justify-center rounded-full border border-stone-300 bg-white/90 text-xs font-bold text-stone-600 shadow-md backdrop-blur transition hover:bg-white"
+        className="flex size-10 items-center justify-center rounded-full border border-surface-border bg-surface-card/90 text-xs font-bold text-content-secondary shadow-md backdrop-blur transition hover:text-abidin-cyan"
         aria-label="Toggle demo controls"
       >
         {open ? "×" : "D"}

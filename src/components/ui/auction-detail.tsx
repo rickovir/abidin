@@ -22,16 +22,11 @@ export function AuctionDetail({ auctionId }: { auctionId: string }) {
   const queryClient = useQueryClient();
   const { data: snapshot, isLoading, isError } = useAuction(auctionId);
 
-  useAuctionEvents(
-    auctionId,
-    snapshot?.lastSequence ?? 0
-  );
+  useAuctionEvents(auctionId, snapshot?.lastSequence ?? 0);
 
   const [feedback, setFeedback] = useState<BidFeedback>({ kind: "idle" });
   const [connection, setConnection] = useState<"live" | "reconnecting" | "paused">("paused");
   const feedbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const lastOwnBidAmount = useRef<number | null>(null);
-  const wasOutbidRef = useRef(false);
   const wasHighestRef = useRef(false);
 
   // Track simulator connection for the live indicator.
@@ -62,7 +57,6 @@ export function AuctionDetail({ auctionId }: { auctionId: string }) {
     if (!auction) return;
     if (iWasHighest) {
       wasHighestRef.current = true;
-      wasOutbidRef.current = false;
       return;
     }
     if (wasHighestRef.current && !iWasHighest && auction.status === "live") {
@@ -78,11 +72,11 @@ export function AuctionDetail({ auctionId }: { auctionId: string }) {
   }, [iWasHighest, auction, snapshot?.bids]);
 
   const { msLeft } = useCountdown(auction?.endsAt ?? "");
-  const ended = auction ? auction.status === "ended" || msLeft <= 0 : false;
+  const ended = auction ? auction.status === "ended" || (!Number.isNaN(msLeft) && msLeft <= 0) : false;
 
   // When countdown hits zero locally, transition state + invalidate caches.
   useEffect(() => {
-    if (!auction || auction.status !== "live" || msLeft > 0) return;
+    if (!auction || auction.status !== "live" || Number.isNaN(msLeft) || msLeft > 0) return;
     queryClient.setQueryData<AuctionSnapshot | null>(["auction", auctionId], (prev) =>
       prev ? { ...prev, auction: { ...prev.auction, status: "ended" } } : prev
     );
@@ -96,7 +90,6 @@ export function AuctionDetail({ auctionId }: { auctionId: string }) {
     async (amount: number) => {
       if (!auction || auction.status !== "live") return;
       setFeedback({ kind: "pending" });
-      lastOwnBidAmount.current = amount;
       let result: BidResult;
       try {
         result = await service.placeBid(auctionId, amount);
@@ -133,11 +126,11 @@ export function AuctionDetail({ auctionId }: { auctionId: string }) {
     return (
       <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6" aria-busy="true">
         <div className="grid gap-8 lg:grid-cols-[1.2fr_1fr]">
-          <div className="aspect-[4/3] animate-pulse rounded-2xl bg-stone-200 motion-reduce:animate-none" />
+          <div className="aspect-[4/3] animate-pulse rounded-2xl bg-surface-hover motion-reduce:animate-none" />
           <div className="space-y-4">
-            <div className="h-8 w-2/3 animate-pulse rounded bg-stone-200 motion-reduce:animate-none" />
-            <div className="h-24 animate-pulse rounded-2xl bg-stone-200 motion-reduce:animate-none" />
-            <div className="h-40 animate-pulse rounded-2xl bg-stone-200 motion-reduce:animate-none" />
+            <div className="h-8 w-2/3 animate-pulse rounded bg-surface-hover motion-reduce:animate-none" />
+            <div className="h-24 animate-pulse rounded-2xl bg-surface-hover motion-reduce:animate-none" />
+            <div className="h-40 animate-pulse rounded-2xl bg-surface-hover motion-reduce:animate-none" />
           </div>
         </div>
       </main>
@@ -147,16 +140,16 @@ export function AuctionDetail({ auctionId }: { auctionId: string }) {
   if (isError || !snapshot || !auction) {
     return (
       <main className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6">
-        <p className="font-serif text-5xl font-bold text-stone-300">404</p>
-        <h1 className="mt-4 font-serif text-2xl font-bold text-stone-900">
+        <p className="text-5xl font-bold text-gradient-hero">404</p>
+        <h1 className="mt-4 text-2xl font-bold text-content-primary">
           Auction not found
         </h1>
-        <p className="mt-2 text-sm text-stone-600">
+        <p className="mt-2 text-sm text-content-secondary">
           The auction you are looking for doesn&apos;t exist or has been removed.
         </p>
         <Link
           href="/auctions"
-          className="mt-6 inline-flex rounded-xl bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-stone-700"
+          className="mt-6 inline-flex rounded-xl bg-gradient-btn-primary px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90"
         >
           Back to auctions
         </Link>
@@ -168,7 +161,7 @@ export function AuctionDetail({ auctionId }: { auctionId: string }) {
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
       <Link
         href="/auctions"
-        className="mb-6 inline-flex items-center gap-1 text-sm font-medium text-stone-600 hover:text-stone-900"
+        className="mb-6 inline-flex items-center gap-1 text-sm font-medium text-content-secondary hover:text-abidin-cyan"
       >
         ← All auctions
       </Link>
@@ -176,7 +169,7 @@ export function AuctionDetail({ auctionId }: { auctionId: string }) {
       <div className="grid gap-8 lg:grid-cols-[1.15fr_1fr]">
         {/* Media + description */}
         <div>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-stone-100">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-surface-hover ring-1 ring-inset ring-surface-border">
             <Image
               src={auction.imageUrl}
               alt={auction.title}
@@ -187,15 +180,15 @@ export function AuctionDetail({ auctionId }: { auctionId: string }) {
             />
           </div>
           <div className="mt-6">
-            <div className="flex flex-wrap items-center gap-2 text-xs font-medium uppercase tracking-wide text-stone-500">
+            <div className="flex flex-wrap items-center gap-2 text-xs font-medium uppercase tracking-wide text-content-secondary">
               <span>{auction.category}</span>
               <span aria-hidden="true">·</span>
               <span>{auction.condition}</span>
             </div>
-            <h1 className="mt-2 font-serif text-3xl font-bold tracking-tight text-stone-900">
+            <h1 className="mt-2 text-3xl font-bold tracking-tight text-content-primary">
               {auction.title}
             </h1>
-            <p className="mt-4 leading-relaxed text-stone-600">{auction.description}</p>
+            <p className="mt-4 leading-relaxed text-content-secondary">{auction.description}</p>
           </div>
         </div>
 
@@ -203,7 +196,7 @@ export function AuctionDetail({ auctionId }: { auctionId: string }) {
         <div className="space-y-5">
           <section
             aria-label="Bidding"
-            className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
+            className="rounded-2xl border border-surface-border bg-surface-card p-6 shadow-sm"
           >
             <div className="flex items-center justify-between">
               <AuctionStatusBadge status={ended ? "ended" : auction.status} withPulse />
@@ -211,13 +204,13 @@ export function AuctionDetail({ auctionId }: { auctionId: string }) {
             </div>
 
             <div className="mt-5">
-              <div className="text-xs font-medium uppercase tracking-widest text-stone-500">
+              <div className="text-xs font-medium uppercase tracking-widest text-content-secondary">
                 Current price
               </div>
-              <div className="mt-1 font-serif text-4xl font-bold tabular-nums text-stone-900">
+              <div className="mt-1 text-4xl font-bold tabular-nums text-gradient-hero">
                 {formatIDR(auction.currentPrice)}
               </div>
-              <div className="mt-1 text-xs text-stone-500">
+              <div className="mt-1 text-xs text-content-muted">
                 {auction.bidCount} {auction.bidCount === 1 ? "bid" : "bids"} ·{" "}
                 {auction.highestBidderId
                   ? `Highest: ${bids[0]?.bidderLabel ?? "—"}`
@@ -227,8 +220,8 @@ export function AuctionDetail({ auctionId }: { auctionId: string }) {
 
             {auction.status === "live" && !ended ? (
               <>
-                <div className="mt-5 flex items-center justify-between rounded-xl bg-stone-50 px-4 py-3">
-                  <span className="text-sm font-medium text-stone-700">Ends in</span>
+                <div className="mt-5 flex items-center justify-between rounded-xl bg-surface-bg px-4 py-3 ring-1 ring-inset ring-surface-border">
+                  <span className="text-sm font-medium text-content-secondary">Ends in</span>
                   <Countdown msLeft={msLeft} />
                 </div>
 
@@ -245,7 +238,7 @@ export function AuctionDetail({ auctionId }: { auctionId: string }) {
             ) : (
               <div className="mt-5 space-y-4">
                 {auction.status === "upcoming" ? (
-                  <div className="rounded-xl bg-amber-50 p-4 text-sm text-amber-800 ring-1 ring-inset ring-amber-200">
+                  <div className="rounded-xl bg-abidin-purple/10 p-4 text-sm text-abidin-purple ring-1 ring-inset ring-abidin-purple/30">
                     This auction hasn&apos;t started yet. Bidding opens{" "}
                     <strong>{new Date(auction.startsAt).toLocaleString("id-ID")}</strong>.
                   </div>
@@ -256,8 +249,8 @@ export function AuctionDetail({ auctionId }: { auctionId: string }) {
             )}
           </section>
 
-          <section aria-label="Bid history" className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-stone-500">
+          <section aria-label="Bid history" className="rounded-2xl border border-surface-border bg-surface-card p-6 shadow-sm">
+            <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-content-secondary">
               Bid history
             </h2>
             <BidHistory bids={bids} />
@@ -272,10 +265,9 @@ function FeedbackBanner({ feedback }: { feedback: BidFeedback }) {
   if (feedback.kind === "idle" || feedback.kind === "pending") return null;
 
   const styles = {
-    accepted:
-      "border-emerald-200 bg-emerald-50 text-emerald-800",
-    outbid: "border-amber-200 bg-amber-50 text-amber-800",
-    rejected: "border-red-200 bg-red-50 text-red-700",
+    accepted: "border-abidin-cyan/40 bg-abidin-cyan/10 text-abidin-cyan",
+    outbid: "border-abidin-orange/40 bg-abidin-orange/10 text-abidin-orange",
+    rejected: "border-abidin-orange/40 bg-abidin-orange/10 text-abidin-orange",
   }[feedback.kind];
 
   const icon = {

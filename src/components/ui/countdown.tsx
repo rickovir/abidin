@@ -21,8 +21,8 @@ export function Countdown({
       className={cn(
         "font-mono tabular-nums",
         "text-2xl font-semibold",
-        urgent && "text-amber-600",
-        over && "text-stone-400",
+        urgent && "text-abidin-orange",
+        over && "text-content-muted",
         className
       )}
       suppressHydrationWarning

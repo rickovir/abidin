@@ -6,15 +6,15 @@ import type { AuctionStatus } from "../../features/auction/types/auction.types";
 const STATUS_STYLES: Record<AuctionStatus, { label: string; className: string }> = {
   live: {
     label: "Live",
-    className: "bg-emerald-50 text-emerald-800 ring-emerald-600/20",
+    className: "bg-abidin-cyan/10 text-abidin-cyan ring-abidin-cyan/30",
   },
   upcoming: {
     label: "Upcoming",
-    className: "bg-amber-50 text-amber-800 ring-amber-600/20",
+    className: "bg-abidin-purple/10 text-abidin-purple ring-abidin-purple/30",
   },
   ended: {
     label: "Ended",
-    className: "bg-stone-100 text-stone-600 ring-stone-500/20",
+    className: "bg-surface-hover text-content-secondary ring-surface-border",
   },
 };
 
@@ -37,12 +37,9 @@ export function AuctionStatusBadge({
       )}
     >
       {status === "live" && withPulse && (
-        <span
-          aria-hidden="true"
-          className="relative flex size-2"
-        >
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60 motion-reduce:animate-none" />
-          <span className="relative inline-flex size-2 rounded-full bg-emerald-600" />
+        <span aria-hidden="true" className="relative flex size-2">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-abidin-cyan opacity-60 motion-reduce:animate-none" />
+          <span className="relative inline-flex size-2 rounded-full bg-abidin-cyan" />
         </span>
       )}
       {label}

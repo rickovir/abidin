@@ -36,14 +36,18 @@ export function BidHistory({
   // Clock is only read after mount → prerender stays deterministic.
   const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
-    setNow(Date.now());
+    // Initial read scheduled async (rule: no synchronous setState in effects).
+    const kickoff = setTimeout(() => setNow(Date.now()), 0);
     const timer = setInterval(() => setNow(Date.now()), 30_000);
-    return () => clearInterval(timer);
+    return () => {
+      clearTimeout(kickoff);
+      clearInterval(timer);
+    };
   }, []);
 
   if (bids.length === 0) {
     return (
-      <p className={cn("rounded-xl bg-stone-50 p-4 text-sm text-stone-500", className)}>
+      <p className={cn("rounded-xl bg-surface-hover p-4 text-sm text-content-secondary", className)}>
         No bids yet. Be the first when the auction is live.
       </p>
     );
@@ -52,7 +56,7 @@ export function BidHistory({
   const ordered = [...bids].sort((a, b) => b.sequence - a.sequence);
 
   return (
-    <ol className={cn("divide-y divide-stone-100", className)} aria-label="Bid history">
+    <ol className={cn("divide-y divide-surface-border/60", className)} aria-label="Bid history">
       {ordered.map((bid) => {
         const isYou = bid.bidderLabel === LOCAL_BIDDER_LABEL;
         return (
@@ -60,7 +64,7 @@ export function BidHistory({
             key={bid.id}
             className={cn(
               "flex items-center justify-between gap-3 py-2.5",
-              isYou && "bg-emerald-50/60 -mx-3 rounded-lg px-3"
+              isYou && "bg-abidin-cyan/5 -mx-3 rounded-lg px-3 ring-1 ring-inset ring-abidin-cyan/20"
             )}
           >
             <div className="flex min-w-0 items-center gap-2.5">
@@ -69,29 +73,29 @@ export function BidHistory({
                 className={cn(
                   "flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold",
                   isYou
-                    ? "bg-emerald-600 text-white"
-                    : "bg-stone-100 text-stone-600"
+                    ? "bg-gradient-btn-primary text-white"
+                    : "bg-surface-hover text-content-secondary"
                 )}
               >
                 {bid.bidderLabel.slice(0, 1)}
               </span>
               <div className="min-w-0">
-                <div className="truncate text-sm font-medium text-stone-900">
+                <div className="truncate text-sm font-medium text-content-primary">
                   {bid.bidderLabel}
                   {isYou && (
-                    <span className="ml-1.5 rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-800">
+                    <span className="ml-1.5 rounded bg-abidin-cyan/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-abidin-cyan">
                       You
                     </span>
                   )}
                 </div>
-                <div className="text-xs text-stone-500" suppressHydrationWarning>
+                <div className="text-xs text-content-muted" suppressHydrationWarning>
                   {now === null
                     ? absoluteTime(bid.createdAt)
                     : relativeTime(bid.createdAt, now)}
                 </div>
               </div>
             </div>
-            <div className="text-right font-semibold tabular-nums text-stone-900">
+            <div className="text-right font-semibold tabular-nums text-content-primary">
               {formatIDR(bid.amount)}
             </div>
           </li>
